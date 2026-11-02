@@ -83,6 +83,8 @@ npx playwright test                  # all tests
 npx playwright test tests/api        # API tests only
 npx playwright test tests/UI         # UI tests only
 npx playwright test tests/integration
+npx playwright test --grep "@smoke"          # quick smoke tests only
+npx playwright test --grep-invert "@smoke"   # everything except smoke tests
 npx playwright show-report           # open the HTML report
 ```
 

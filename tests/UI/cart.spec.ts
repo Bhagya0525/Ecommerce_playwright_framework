@@ -17,8 +17,7 @@ test.describe('Cart', () => {
     await productPage.addToCart();
   });
 
-  test('cart counter shows one item after adding a product', async () => {
-    await expect(productPage.cartLink).toContainText('(1)');
+  test('cart counter shows one item after adding a product', { tag: '@smoke' }, async () => {    await expect(productPage.cartLink).toContainText('(1)');
   });
 
   test('cart page shows the selected product, variant and total', async ({ page }) => {
