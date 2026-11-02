@@ -43,4 +43,10 @@ export class StoreApi {
     const { cart } = await response.json();
     return cart;
   }
+    async tryAddToCart(cartId: string, variantId: string, quantity: number) {
+    return this.request.post(`${this.apiUrl}/store/carts/${cartId}/line-items`, {
+      headers: this.headers,
+      data: { variant_id: variantId, quantity },
+    });
+  }
 }
