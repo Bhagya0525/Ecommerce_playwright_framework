@@ -18,6 +18,7 @@ It combines UI tests, API tests and integration tests in one readable, maintaina
 - A small API helper class for backend requests
 - dotenv for configuration and secrets
 - Docker (PostgreSQL for the store's database)
+- Cross-browser execution on Chromium, Firefox and WebKit
 
 ## Project structure
 
@@ -86,6 +87,7 @@ npx playwright test tests/integration
 npx playwright test --grep "@smoke"          # quick smoke tests only
 npx playwright test --grep-invert "@smoke"   # everything except smoke tests
 npx playwright show-report           # open the HTML report
+npx playwright test --project=firefox        # run on a single browser
 ```
 
 ## About this project
