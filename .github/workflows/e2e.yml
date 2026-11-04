@@ -38,3 +38,19 @@ jobs:
           mkdir store-app
           cd store-app
           CI=true npx create-medusa-app@latest my-store --with-nextjs-starter --no-browser --db-url "postgres://postgres:postgres@localhost:5432/medusa-store"
+      - name: Start the Medusa backend
+        working-directory: store-app/my-store/apps/backend
+        run: nohup npm run dev > "${{ github.workspace }}/backend.log" 2>&1 &
+
+      - name: Wait for the backend to be ready
+        run: |
+          for i in $(seq 1 60); do
+            if curl -sf http://localhost:9000/health > /dev/null; then
+              echo "Backend is ready"
+              exit 0
+            fi
+            sleep 5
+          done
+          echo "Backend did not start. Log:"
+          cat backend.log
+          exit 1
