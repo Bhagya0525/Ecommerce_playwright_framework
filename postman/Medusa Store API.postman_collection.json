@@ -1,0 +1,107 @@
+{
+  "info": {
+    "_postman_id": "8dc9efdd-9217-40d1-beac-b2c26568573b",
+    "name": "Medusa Store API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "46896925",
+    "_collection_link": "https://go.postman.co/collection/46896925-8dc9efdd-9217-40d1-beac-b2c26568573b?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Get products",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Product list is returned\", function () {\r",
+              "    const body = pm.response.json();\r",
+              "    pm.expect(body.products.length).to.be.above(0);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Medusa T-Shirt is in the list\", function () {\r",
+              "    const titles = pm.response.json().products.map(p => p.title);\r",
+              "    pm.expect(titles).to.include(\"Medusa T-Shirt\");\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "x-publishable-api-key",
+            "value": "{{publishable_key}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/store/products",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "store",
+            "products"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get products without API key",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Request without a publishable key is rejected with 400\", function () {\r",
+              "    pm.response.to.have.status(400);\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/store/products",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "store",
+            "products"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}

@@ -24,6 +24,7 @@ It combines UI tests, API tests and integration tests in one readable, maintaina
 
 ```
 api/          API helper (StoreApi.ts)
+postman/      Postman collection for the store API
 pages/        Page Objects (StorePage, ProductPage, CartPage)
 tests/
   UI/         Browser tests
@@ -89,6 +90,9 @@ npx playwright test --grep-invert "@smoke"   # everything except smoke tests
 npx playwright show-report           # open the HTML report
 npx playwright test --project=firefox        # run on a single browser
 ```
+## Postman collection
+
+Import `postman/Medusa_Store_API.postman_collection.json` into Postman, then create an environment named `Medusa Local` with two variables: `base_url` (`http://localhost:9000`) and `publishable_key` (your publishable key from the Medusa admin). The collection includes a success case and an error case, each with automatic checks.
 
 ## About this project
 
