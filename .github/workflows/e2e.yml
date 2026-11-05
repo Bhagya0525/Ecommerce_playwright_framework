@@ -54,3 +54,22 @@ jobs:
           echo "Backend did not start. Log:"
           cat backend.log
           exit 1
+      - name: Create an admin user and read the publishable key
+        working-directory: store-app/my-store/apps/backend
+        run: |
+          npx medusa user -e ci-admin@example.com -p ci-admin-password
+          TOKEN=$(curl -s -X POST http://localhost:9000/auth/user/emailpass \
+            -H "Content-Type: application/json" \
+            -d '{"email":"ci-admin@example.com","password":"ci-admin-password"}' | jq -r '.token')
+          KEY=$(curl -s "http://localhost:9000/admin/api-keys?type=publishable" \
+            -H "Authorization: Bearer $TOKEN" | jq -r '.api_keys[0].token')
+          if [ -z "$KEY" ] || [ "$KEY" = "null" ]; then
+            echo "Could not read the publishable key"
+            exit 1
+          fi
+          echo "::add-mask::$KEY"
+          echo "MEDUSA_PUBLISHABLE_KEY=$KEY" >> "$GITHUB_ENV"
+          echo "MEDUSA_API_URL=http://localhost:9000" >> "$GITHUB_ENV"
+
+      - name: Run API tests
+        run: npx playwright test tests/api --project=chromium
