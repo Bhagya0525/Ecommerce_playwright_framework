@@ -1,8 +1,11 @@
 import { test, expect } from '@playwright/test';
+import { HomePage } from '../../pages/HomePage';
 
 test('home page loads', { tag: '@smoke' }, async ({ page }) => {
-  await page.goto('/');
+  const homePage = new HomePage(page);
+
+  await homePage.open();
 
   await expect(page).toHaveTitle(/Medusa/);
-  await expect(page.getByText('Ecommerce Starter Template')).toBeVisible();
+  await expect(homePage.heading).toBeVisible();
 });
