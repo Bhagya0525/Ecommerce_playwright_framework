@@ -1,9 +1,6 @@
-import { test, expect } from '@playwright/test';
-import { HomePage } from '../../pages/HomePage';
+import { test, expect } from '../../fixtures';
 
-test('home page loads', { tag: '@smoke' }, async ({ page }) => {
-  const homePage = new HomePage(page);
-
+test('home page loads', { tag: '@smoke' }, async ({ page, homePage }) => {
   await homePage.open();
 
   await expect(page).toHaveTitle(/Medusa/);

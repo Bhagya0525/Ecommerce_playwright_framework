@@ -3,8 +3,10 @@ import { StorePage } from '../pages/StorePage';
 import { ProductPage } from '../pages/ProductPage';
 import { CartPage } from '../pages/CartPage';
 import { StoreApi } from '../api/StoreApi';
+import { HomePage } from '../pages/HomePage';
 
 type Fixtures = {
+  homePage: HomePage;
   storePage: StorePage;
   productPage: ProductPage;
   cartPage: CartPage;
@@ -12,6 +14,9 @@ type Fixtures = {
 };
 
 export const test = base.extend<Fixtures>({
+    homePage: async ({ page }, use) => {
+    await use(new HomePage(page));
+    },
   storePage: async ({ page }, use) => {
     await use(new StorePage(page));
   },
