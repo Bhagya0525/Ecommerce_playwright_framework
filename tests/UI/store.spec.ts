@@ -1,10 +1,7 @@
-import { test, expect } from '@playwright/test';
-import { StorePage } from '../../pages/StorePage';
+import { test, expect } from '../../fixtures';
 import { products } from '../../test-data/products';
 
-test('user can open a product from the store', async ({ page }) => {
-  const storePage = new StorePage(page);
-
+test('user can open a product from the store', async ({ page, storePage }) => {
   await storePage.open();
   await storePage.openProduct(products.tshirt.title);
 
