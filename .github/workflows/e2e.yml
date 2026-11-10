@@ -101,13 +101,13 @@ jobs:
           echo "Storefront did not start. Log:"
           cat storefront.log
           exit 1
-      - name: Install Playwright browser
-        run: npx playwright install --with-deps chromium
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium firefox webkit
 
       - name: Run UI and integration tests
         env:
           PLAYWRIGHT_HTML_OPEN: never
-        run: npx playwright test tests/UI tests/integration --project=chromium
+        run: npx playwright test tests/UI tests/integration
 
       - name: Upload the test report
         if: always()
