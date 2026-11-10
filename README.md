@@ -1,5 +1,7 @@
 # E-commerce Test Automation Framework (Playwright + TypeScript)
 
+[![E2E tests](https://github.com/Bhagya0525/Ecommerce_playwright_framework/actions/workflows/e2e.yml/badge.svg)](https://github.com/Bhagya0525/Ecommerce_playwright_framework/actions/workflows/e2e.yml)
+
 An end-to-end test automation framework for a self-hosted [Medusa](https://medusajs.com) e-commerce store.
 It combines UI tests, API tests and integration tests in one readable, maintainable project.
 
@@ -8,7 +10,7 @@ It combines UI tests, API tests and integration tests in one readable, maintaina
 | Layer | What is tested |
 |---|---|
 | UI | Home page, store page, product selection, add to cart, cart contents and total |
-| API | Product list, cart creation, adding items to a cart |
+| API | Product list, cart creation, adding items to a cart, error cases (missing API key, unknown cart) |
 | Integration | A cart created through the API appears correctly in the storefront |
 
 ## Tech stack
@@ -23,15 +25,18 @@ It combines UI tests, API tests and integration tests in one readable, maintaina
 ## Project structure
 
 ```
-api/          API helper (StoreApi.ts)
-postman/      Postman collection for the store API
-pages/        Page Objects (StorePage, ProductPage, CartPage)
+api/            API helper (StoreApi.ts)
+fixtures/       Custom Playwright fixtures (page objects and API helper)
+pages/          Page Objects (HomePage, StorePage, ProductPage, CartPage)
+postman/        Postman collection for the store API
+test-data/      Shared test data (product names, sizes, prices)
 tests/
-  UI/         Browser tests
-  api/        API tests
-  integration/ Tests that combine API and UI
+  UI/           Browser tests
+  api/          API tests
+  integration/  Tests that combine API and UI
+.github/        CI workflow (GitHub Actions)
 playwright.config.ts
-.env          Local settings (not committed)
+.env            Local settings (not committed)
 ```
 
 ## Design choices
@@ -90,6 +95,18 @@ npx playwright test --grep-invert "@smoke"   # everything except smoke tests
 npx playwright show-report           # open the HTML report
 npx playwright test --project=firefox        # run on a single browser
 ```
+
+## Continuous integration
+
+The GitHub Actions workflow in `.github/workflows/e2e.yml` runs on every push and pull request. It:
+
+1. Starts a PostgreSQL service.
+2. Creates a fresh Medusa store (backend and storefront) on the CI machine.
+3. Creates an admin user and reads the publishable API key from the store, so no secret is stored in the repository.
+4. Starts the backend and the storefront, and warms up the storefront pages.
+5. Runs the API tests, then the UI and integration tests, on Chromium.
+6. Uploads the Playwright HTML report as a downloadable artifact.
+
 ## Postman collection
 
 Import `postman/Medusa_Store_API.postman_collection.json` into Postman, then create an environment named `Medusa Local` with two variables: `base_url` (`http://localhost:9000`) and `publishable_key` (your publishable key from the Medusa admin). The collection includes a success case and an error case, each with automatic checks.
