@@ -1,13 +1,9 @@
-import { test, expect } from '@playwright/test';
-import { StoreApi } from '../../api/StoreApi';
-import { CartPage } from '../../pages/CartPage';
+import { test, expect } from '../../fixtures';
+import { products } from '../../test-data/products';
 
-test('a cart created through the API appears in the storefront', async ({ request, context, page }) => {
-  const storeApi = new StoreApi(request);
-  const cartPage = new CartPage(page);
-
+test('a cart created through the API appears in the storefront', async ({ storeApi, cartPage, context, page }) => {
   // Build the cart through the API
-  const variantId = await storeApi.getVariantId('Medusa T-Shirt');
+  const variantId = await storeApi.getVariantId(products.tshirt.title);
   const cartId = await storeApi.createCart();
   await storeApi.addToCart(cartId, variantId, 2);
 
@@ -18,6 +14,6 @@ test('a cart created through the API appears in the storefront', async ({ reques
 
   // Open the cart page and check what the shopper sees
   await page.goto('/dk/cart');
-  await expect(cartPage.productTitle).toHaveText('Medusa T-Shirt');
+  await expect(cartPage.productTitle).toHaveText(products.tshirt.title);
   await expect(cartPage.cartTotal).toContainText('€20.00');
 });
