@@ -8,6 +8,9 @@ test('a guest can place an order for a cart created through the API', async ({
   context,
   page,
 }) => {
+  // A long journey on a dev-mode storefront, so allow three times the normal time.
+  test.slow();
+
   // Build the cart through the API
   const variantId = await storeApi.getVariantId(products.tshirt.title);
   const cartId = await storeApi.createCart();
@@ -26,5 +29,5 @@ test('a guest can place an order for a cart created through the API', async ({
   await checkoutPage.placeOrder();
 
   // The shopper lands on the order confirmation page
-  await expect(page).toHaveURL(/\/order\/.+\/confirmed/);
+  await expect(page).toHaveURL(/\/order\/.+\/confirmed/, { timeout: 45000 });
 });
