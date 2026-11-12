@@ -9,12 +9,18 @@ export class StoreApi {
   async getVariantId(productTitle: string): Promise<string> {
     const response = await this.request.get(`${this.apiUrl}/store/products?fields=*variants`, {
       headers: this.headers,
-    });
+    }
+  
+  );
     expect(response.ok()).toBeTruthy();
 
     const { products } = await response.json();
     const product = products.find((item: { title: string }) => item.title === productTitle);
     return product.variants[0].id;
+  }
+
+    async listProducts() {
+    return this.request.get(`${this.apiUrl}/store/products`, { headers: this.headers });
   }
 
   async createCart(): Promise<string> {
