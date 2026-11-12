@@ -37,6 +37,7 @@ tests/
 .github/        CI workflow (GitHub Actions)
 playwright.config.ts
 .env            Local settings (not committed)
+Dockerfile      Image that runs the API tests in a container
 ```
 
 ## Design choices
@@ -95,6 +96,17 @@ npx playwright test --grep-invert "@smoke"   # everything except smoke tests
 npx playwright show-report           # open the HTML report
 npx playwright test --project=firefox        # run on a single browser
 ```
+
+## Running the API tests in Docker
+
+The `Dockerfile` builds an image from the official Playwright image (its version matches the Playwright version in `package.json`) and runs the API tests. The `.env` file is excluded from the image, so the API key is passed in when the container runs.
+
+```bash
+docker build -t ecommerce-playwright-tests .
+docker run --rm --env-file .env -e MEDUSA_API_URL=http://host.docker.internal:9000 ecommerce-playwright-tests
+```
+
+`host.docker.internal` is how a container reaches the store running on your own machine (Docker Desktop). The browser tests are not containerised yet, because that would also need the store itself to run inside Docker.
 
 ## Continuous integration
 
