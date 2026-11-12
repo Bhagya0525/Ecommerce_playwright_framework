@@ -7,6 +7,7 @@ test('a guest can place an order for a cart created through the API', async ({
   checkoutPage,
   context,
   page,
+  cartWithTshirt,
 }) => {
   // A long journey on a dev-mode storefront, so allow three times the normal time.
   test.slow();

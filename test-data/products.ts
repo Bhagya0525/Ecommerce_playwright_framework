@@ -4,5 +4,6 @@ export const products = {
     size: 'L',
     color: 'Black',
     price: '€10.00',
+    totalForTwo: '€20.00',
   },
 };

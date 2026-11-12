@@ -5,6 +5,7 @@ import { CartPage } from '../pages/CartPage';
 import { StoreApi } from '../api/StoreApi';
 import { HomePage } from '../pages/HomePage';
 import { CheckoutPage } from '../pages/CheckoutPage';
+import { products } from '../test-data/products';
 
 type Fixtures = {
   homePage: HomePage;
@@ -13,6 +14,7 @@ type Fixtures = {
   cartPage: CartPage;
   storeApi: StoreApi;
   checkoutPage: CheckoutPage;
+  cartWithTshirt: string;
 };
 
 export const test = base.extend<Fixtures>({
@@ -33,6 +35,15 @@ export const test = base.extend<Fixtures>({
   },
   storeApi: async ({ request }, use) => {
     await use(new StoreApi(request));
+  },
+    cartWithTshirt: async ({ storeApi, context }, use) => {
+    const variantId = await storeApi.getVariantId(products.tshirt.title);
+    const cartId = await storeApi.createCart();
+    await storeApi.addToCart(cartId, variantId, 1);
+    await context.addCookies([
+      { name: '_medusa_cart_id', value: cartId, domain: 'localhost', path: '/' },
+    ]);
+    await use(cartId);
   },
 });
 
