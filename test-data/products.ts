@@ -6,4 +6,7 @@ export const products = {
     price: '€10.00',
     totalForTwo: '€20.00',
   },
+  shorts: {
+    title: 'Medusa Shorts',
+  },
 };
