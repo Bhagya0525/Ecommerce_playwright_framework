@@ -9,9 +9,13 @@ It combines UI tests, API tests and integration tests in one readable, maintaina
 
 | Layer | What is tested |
 |---|---|
-| UI | Home page, store page, product selection, add to cart, cart contents and total |
-| API | Product list, cart creation, adding items to a cart, error cases (missing API key, unknown cart) |
-| Integration | A cart created through the API appears correctly in the storefront |
+| UI | Home page, store page, search, product selection, add to cart, cart contents, quantity change, item removal |
+| Checkout (integration) | A cart created through the API, then a full guest checkout through the storefront |
+| API | Product list, cart creation, adding items, error cases, response shape (Zod contract), invalid inputs, response-time budget |
+| Accessibility | axe-core scan of four pages against a baseline of known issues |
+| Visual | Screenshot comparison of the empty cart page |
+| Network resilience | Slow search API, and a failing search API (a known issue, recorded as an expected failure) |
+| Performance | API response time and page load time against generous budgets |
 
 ## Tech stack
 
@@ -93,6 +97,9 @@ npx playwright test tests/UI         # UI tests only
 npx playwright test tests/integration
 npx playwright test --grep "@smoke"          # quick smoke tests only
 npx playwright test --grep-invert "@smoke"   # everything except smoke tests
+npx playwright test --grep "@a11y"           # accessibility checks only
+npx playwright test --grep "@visual"         # visual regression only
+npx playwright test --grep "@perf"           # performance budgets only
 npx playwright show-report           # open the HTML report
 npx playwright test --project=firefox        # run on a single browser
 ```
@@ -107,6 +114,20 @@ docker run --rm --env-file .env -e MEDUSA_API_URL=http://host.docker.internal:90
 ```
 
 `host.docker.internal` is how a container reaches the store running on your own machine (Docker Desktop). The browser tests are not containerised yet, because that would also need the store itself to run inside Docker.
+
+## Known issues in the application under test
+
+The tests run against the unmodified Medusa starter store, which is rebuilt from scratch in CI. These problems are real and are recorded in the tests, not hidden:
+
+- **Accessibility:** the footer logo link has no text, the header cart link sits inside a button (nested controls), the product accordions have unnamed buttons, and the empty-cart link has low colour contrast. The accessibility test fails only when a new violation appears or one of these is fixed.
+- **Search failure:** when the search API returns an error, the storefront throws a runtime error and the product list disappears. The test for the expected behaviour is marked as an expected failure until the store handles it.
+- **Quantity validation:** adding zero items is rejected, but the error message says the minimum is zero.
+
+## Test design notes
+
+- **Visual baselines** include the operating system in their file name. The Linux baseline used in CI was created by CI itself, and the Windows baseline stays local (git-ignored).
+- **Timing budgets** are deliberately generous (2 s for the API, 5 s for a page load), because the store runs in development mode and CI machines are noisy. They catch large slowdowns, not small ones.
+- **Typing in the checkout form:** WebKit drops a value set with `fill()` in the first name field, so the test types that field key by key.
 
 ## Continuous integration
 
