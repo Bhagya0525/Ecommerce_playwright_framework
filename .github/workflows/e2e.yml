@@ -117,6 +117,15 @@ jobs:
           PLAYWRIGHT_HTML_OPEN: never
         run: npx playwright test tests/UI tests/integration --project=${{ matrix.browser }}
 
+      - name: Upload visual baselines
+        if: always() && matrix.browser == 'chromium'
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-baselines
+          path: tests/UI/visual.spec.ts-snapshots/
+          if-no-files-found: ignore
+          retention-days: 14
+
       - name: Upload the test report
         if: always()
         uses: actions/upload-artifact@v4
